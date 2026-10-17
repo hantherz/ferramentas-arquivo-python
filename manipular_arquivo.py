@@ -3,59 +3,72 @@
 import shutil
 from pathlib import Path
 
-stdpath = Path.home()
+def localizar_arquivo():
+    arquivo = str(input("Arquivo: "))
+    pesquisa_dir_atual = Path.glob(Path.home(), arquivo)
+    arquivos = []
+    i_arq = 0
 
-print("MENU DE FUNÇÕES".center)
+    if(pesquisa_dir_atual):
+        for arquivo in pesquisa_dir_atual:
+            arquivos.append(arquivo)
+            print(f"{i_arq + 1}: {arquivo}")
+            i_arq += 1
+    else:
+        pesquisa_subdirs = Path.rglob(Path.home(), arquivo)
+        for arquivo in pesquisa_subdirs:
+            arquivos.append(arquivo)
+            print(f"{i_arq + 1}: {arquivo}")
+            i_arq += 1
+    if(len(arquivos) > 1):
+        escolher_arquivo = int(input("Opção: "))
+        arquivo = arquivos[escolher_arquivo - 1]
+        return arquivo
+    else:
+        return arquivo
+
+def caminho_destino():
+    output = str(input(f"Caminho de saída: {Path.home()}/"))
+    outputpath = Path.home() / output
+    return outputpath
+
+print("--------------------MENU DE FUNÇÕES--------------------")
 print(f"INÍCIO PADRÃO: {Path.home()}")
 print("1 - Mover | 2 - Copiar | 3 - Ler | 4 - Criar | 5 - Deletar | 6 - Escrever | 7 - Procurar")
 
-funcao = str(input("Função: "))
+opcao = str(input("Função (use o número referente): "))
 
-if(funcao == "1"):
-    arquivo = str(input("Arquivo: "))
-    outputpath = str(input("Diretório do arquivo: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    shutil.move(arquivo, arquivo_path)
+if(opcao == "1"):
+    arquivo = localizar_arquivo()
+    path_destino = caminho_destino()
+    shutil.move(arquivo, path_destino)
     print("Arquivo movido.")
-elif(funcao == "2"):
-    arquivo = str(input("Arquivo: "))
-    outputpath = str(input("Diretório do arquivo: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    shutil.copystat(arquivo, outputpath)
+elif(opcao == "2"):
+    arquivo = localizar_arquivo()
+    path_destino = caminho_destino()
+    shutil.copystat(arquivo, path_destino)
     print("Arquivo copiado.")
-elif(funcao == "3"):
-    arquivo = str(input("Arquivo: "))
-    outputpath = str(input("Diretório do arquivo: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    shutil.copystat(arquivo, outputpath)
-    print(Path.read_text(arquivo_path))
-elif(funcao == "4"):
-    arquivo = str(input("Arquivo novo: "))
-    outputpath = str(input("Criar arquivo em: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    Path.touch(arquivo_path)
-    print("Arquivo vazio criado.")
-elif(funcao == "5"):
-    arquivo = str(input("Arquivo: "))
-    outputpath = str(input("Diretório do arquivo: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    arquivo_path.unlink(missing_ok=True)
+elif(opcao == "3"):
+    arquivo = localizar_arquivo()
+    if(arquivo.stat().st_size == 0):
+        print("Arquivo vazio.")
+    else:
+        print(Path.read_text(arquivo))
+elif(opcao == "4"):
+    arquivo = str(input("Novo arquivo: "))
+    path_destino = caminho_destino()
+    path_destino = path_destino / arquivo
+    Path.touch(path_destino)
+    print("Arquivo criado.")
+elif(opcao == "5"):
+    arquivo = localizar_arquivo()
+    Path.unlink(arquivo)
     print("Arquivo deletado.")
-elif(funcao == "6"):
-    arquivo = str(input("Arquivo: "))
-    outputpath = str(input("Diretório do arquivo: "))
-    texto = str(input("Escreva: "))
-    arquivo_path = stdpath / outputpath / arquivo
-    Path.write_text(texto, arquivo_path)
-    print("Arquivo sobrescrito.")
-elif(funcao == "7"):
-    arquivo = str(input("Arquivo: "))
-    check_stdpath = str(input(f"Procurar a partir de {stdpath} (1 - Sim | 0 - Não): "))
-    if(check_stdpath == "0"):
-        path = str(input("Procurar a partir de: "))
-        path = path
-        localizacao = Path.rglob(path, arquivo)
-    localizacao = Path.rglob(stdpath, arquivo)
-    for resultado in localizacao:
-        print(resultado)
-    
+elif(opcao == "6"):
+    arquivo = localizar_arquivo()
+    texto = str(input("Texto a ser inserido ao final do arquivo: "))
+    with open(arquivo, "a", encoding="utf-8") as arquivo:
+        arquivo.write(texto)
+    print("Texto inserido.")
+elif(opcao == "7"):
+    print(localizar_arquivo())
