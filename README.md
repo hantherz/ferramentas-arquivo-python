@@ -15,6 +15,6 @@
 - Deletar
    * Deleta um arquivo. Informe seu nome para que possa deletá-lo.
 - Escrever
-   * Escreve em um arquivo sem apagar o que já está escrito (não sobreescreve), adicionando o texto ao final.
+   * Escreve em um arquivo sem apagar o que já está escrito (não sobrescreve), adicionando o texto ao final.
 - Procurar
    * Faz uma varredura em busca do arquivo a partir do caminho padrão (home) do seu sistema operacional e lista as opções.
