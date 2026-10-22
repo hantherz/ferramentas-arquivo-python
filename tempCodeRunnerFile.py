@@ -1,0 +1,1 @@
+stat().st_size
